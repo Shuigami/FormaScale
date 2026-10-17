@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FormaScale — Live</title>
+  <link rel="stylesheet" href="/static/live.css">
+</head>
+<body class="atlas desk">
+  <div class="desk-shell" id="desk-frame">
+    <header class="command-strip">
+      <div class="brand-row">
+        <div class="mark">
+          <svg class="mark-glyph" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#d8322e" d="M12 2 L22 20 H2 Z"/>
+            <path fill="#09101d" d="M12 8 L17 18 H7 Z"/>
+          </svg>
+          <span class="mark-word">FormaScale</span>
+        </div>
+        <p class="session-title">
+          Reconstruction en direct
+          <span id="session-title" class="session-id"></span>
+        </p>
+        <p class="link-status">
+          <span id="badge" class="badge" data-tone="warn">Hors ligne</span>
+        </p>
+      </div>
+
+      <div class="command-row">
+        <div class="keyframe-count">
+          <strong id="stat-keyframes">0</strong>
+          <span>keyframes</span>
+        </div>
+
+        <div class="next-action">
+          <span class="next-orb" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#fff" d="M8 5v14l11-7z"/></svg>
+          </span>
+          <div class="next-copy">
+            <strong>Prochaine vue</strong>
+            <span id="status-line">En attente du téléphone et des keyframes…</span>
+          </div>
+        </div>
+
+        <label class="interval-control desk-interval" title="Délai minimum entre deux auto-keyframes (téléphone)">
+          <span>Auto min <strong id="interval-label">2,2 s</strong></span>
+          <input id="auto-interval" type="range" min="500" max="8000" step="100" value="2200">
+        </label>
+
+        <div class="command-actions">
+          <button id="reset" class="cmd-btn" type="button">
+            <svg class="cmd-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+            Recentrer
+          </button>
+          <button id="reconstruct" class="cmd-btn" type="button">
+            <svg class="cmd-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M20 12a8 8 0 1 1-2.3-5.6"/><path fill="currentColor" d="M20 4v6h-6z"/></svg>
+            Relancer
+          </button>
+          <button id="densify" class="cmd-btn" type="button" title="Nuage dense MVS (GPU)">
+            <svg class="cmd-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M4 18l4-8 3 5 3-7 6 10H4z"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></svg>
+            Dense
+          </button>
+          <button id="clear-keyframes" class="cmd-btn danger" type="button" title="Effacer toutes les keyframes">
+            <svg class="cmd-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M5 7h14M10 11v6M14 11v6M9 7l1-2h4l1 2M8 7v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"/></svg>
+            Effacer
+          </button>
+          <a class="cmd-btn primary" href="/phone" target="_blank" rel="noopener">
+            <svg class="cmd-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg>
+            ouvrir téléphone
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="cloud-stage">
+      <canvas id="scene" aria-label="Nuage de points live"></canvas>
+
+      <aside class="phone-inset">
+        <div class="inset-bar">
+          <div class="view-tabs" role="tablist">
+            <button id="tab-live" class="tab active" type="button">Vue live</button>
+            <button id="tab-keyframe" class="tab" type="button">Keyframe</button>
+          </div>
+          <span id="photo-status" class="inset-link">Flux live</span>
+        </div>
+        <div id="live-pane" class="inset-body">
+          <img id="live-preview" alt="Aperçu caméra téléphone">
+        </div>
+        <div id="keyframe-pane" class="inset-body" hidden>
+          <label class="photo-label">Keyframe
+            <select id="photo"></select>
+          </label>
+          <div class="photo-area">
+            <canvas id="photo-canvas" aria-label="Keyframe et points reconstruits"></canvas>
+          </div>
+          <p id="photo-detail"></p>
+        </div>
+      </aside>
+    </div>
+
+    <p class="hint-line" id="selection">
+      W/S : zoom · A/D : latéral · Q/E : bas/haut · souris : orbite · molette : zoom · <em>R : recentrer</em>
+    </p>
+
+    <div class="wire-only" aria-hidden="true">
+      <span id="stat-phone">—</span>
+      <span id="stat-points">0</span>
+      <span id="stat-registered">0</span>
+    </div>
+  </div>
+  <script src="/static/desk.js"></script>
+</body>
+</html>

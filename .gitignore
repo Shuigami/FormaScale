@@ -1,0 +1,31 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local capture / dataset volume (large, machine-specific)
+captures/
+datasets/
+
+# TLS material for live mode
+live/certs/
+
+# Design tooling scratch
+.impeccable/
+
+# Binaries / archives
+*.zip
+*.deb
+*.ply
+!tests/fixtures/**/*.ply
+
+# Generated viewer payloads
+viewer-data.js
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

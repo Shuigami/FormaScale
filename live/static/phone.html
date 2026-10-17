@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>FormaScale — Téléphone</title>
+  <link rel="stylesheet" href="/static/live.css">
+</head>
+<body class="atlas phone">
+  <div class="phone-shell">
+    <header>
+      <h1 class="mark">
+        <svg class="mark-glyph" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#d8322e" d="M12 2 L22 20 H2 Z"/>
+          <path fill="#09101d" d="M12 8 L17 18 H7 Z"/>
+        </svg>
+        FormaScale <span>/ téléphone</span>
+      </h1>
+      <span class="badge" id="badge" data-tone="warn">Hors ligne</span>
+    </header>
+
+    <div class="phone-video">
+      <video id="local-video" playsinline muted autoplay></video>
+    </div>
+
+    <div class="phone-actions">
+      <button id="start" class="primary" type="button">Démarrer la caméra</button>
+      <button id="keyframe" type="button" disabled>Keyframe</button>
+    </div>
+    <div class="phone-actions">
+      <button id="auto" type="button" disabled>Auto keyframes : off</button>
+      <button id="torch" type="button" disabled>Lampe</button>
+    </div>
+    <label class="interval-control">
+      <span>Min. entre auto <strong id="interval-label">2,2 s</strong></span>
+      <input id="auto-interval" type="range" min="500" max="8000" step="100" value="2200">
+    </label>
+    <div class="phone-actions">
+      <button id="clear-keyframes" type="button">Effacer les keyframes</button>
+    </div>
+
+    <div class="phone-meta" id="meta">
+      Autorise la caméra, puis oriente le téléphone autour de l’objet.
+      Les keyframes partent vers le PC pour la reconstruction.
+    </div>
+    <p class="hint">
+      Bouge lentement, varie les angles, évite le flou.
+      HTTPS requis sur iPhone (accepte le certificat une fois).
+    </p>
+  </div>
+  <script src="/static/phone.js"></script>
+</body>
+</html>

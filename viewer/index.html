@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FormaScale — Reconstruction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>FormaScale <span id="capture-title">/ …</span></h1>
+    </div>
+    <span class="badge" id="status-badge">Chargement</span>
+  </header>
+  <main>
+    <section class="toolbar">
+      <label>Capture<select id="capture"></select></label>
+      <label>Expérience<select id="run"></select></label>
+      <label>Modèle<select id="model"></select></label>
+      <label class="check"><input type="checkbox" id="cameras" checked>Caméras</label>
+      <button id="reset" type="button">Recentrer</button>
+      <button id="export" type="button">Exporter le diagnostic</button>
+    </section>
+    <section id="stats" class="stats"></section>
+    <div class="workspace">
+      <section class="scene">
+        <div class="section-title">
+          <h2>Nuage de points</h2>
+          <span>W/S : zoom · A/D : latéral · souris : orbite · molette : zoom · R : recentrer</span>
+        </div>
+        <canvas id="scene" aria-label="Nuage de points 3D interactif"></canvas>
+        <p id="selection">Clique sur un point pour voir ses observations dans les photos.</p>
+        <p class="notice" id="scene-notice"></p>
+      </section>
+      <section class="photos">
+        <div class="section-title">
+          <h2>Vérification dans les photos</h2>
+          <span id="photo-status"></span>
+        </div>
+        <label>Photo<select id="photo"></select></label>
+        <div class="annotation-controls" id="annotation-controls">
+          <label>Action sur la photo
+            <select id="action">
+              <option value="inspect">Inspecter les points 3D</option>
+              <option value="A">Placer le centre de la croix A</option>
+              <option value="B">Placer le centre de la croix B</option>
+              <option value="C">Placer le point de mesure C</option>
+              <option value="D">Placer le point de mesure D</option>
+            </select>
+          </label>
+          <button id="remove-annotation" type="button">Effacer le repère choisi</button>
+        </div>
+        <div class="photo-area">
+          <canvas id="photo-canvas" aria-label="Photo et points reconstruits"></canvas>
+        </div>
+        <p id="photo-detail"></p>
+        <p class="legend"><i></i> Points observés dans cette photo et reconstruits en 3D</p>
+      </section>
+    </div>
+    <section class="calibration" id="calibration">
+      <h2>Préparer l'échelle et une mesure</h2>
+      <p>Place les mêmes centres A et B dans au moins trois photos raccordées, sous des angles différents. C et D sont facultatifs et servent à mesurer une autre distance. Les positions sont conservées dans ce navigateur pour ce modèle.</p>
+      <div class="toolbar">
+        <label>Distance réelle A–B (mm)<input id="reference-length" type="number" min="0.01" step="0.1" value="100"></label>
+        <button id="export-annotations" type="button">Exporter les repères</button>
+        <span id="annotation-status" role="status"></span>
+      </div>
+      <p class="muted">L'export contient les coordonnées des images préparées. La triangulation et le contrôle des erreurs seront effectués par le pipeline avant toute conversion en millimètres.</p>
+    </section>
+    <section class="calibration" id="dtu-panel" hidden>
+      <h2>Évaluation DTU</h2>
+      <p id="dtu-summary"></p>
+      <p class="muted">Accuracy = distance data→STL. Completeness = distance STL→data. Port Python du protocole DTU ; le MATLAB officiel reste la référence leaderboard.</p>
+    </section>
+    <section class="details">
+      <h2>Photos non raccordées au modèle sélectionné</h2>
+      <p id="missing"></p>
+      <p class="muted">Une photo raccordée ne garantit pas que l’objet entier est reconstruit. L’erreur de reprojection est exprimée sur les images préparées.</p>
+    </section>
+  </main>
+  <script src="catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
