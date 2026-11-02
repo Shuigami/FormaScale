@@ -29,3 +29,6 @@ viewer-data.js
 Thumbs.db
 .vscode/
 .idea/
+
+# GitHub Pages build output
+_site/

@@ -153,6 +153,23 @@ Affichage :
 - Desk live : bouton **Dense** (`POST /api/dense`) charge le fused existant
   ou lance `reconstruct_dense.py` (GPU). Le sparse reste via Relancer.
 
+## Viewer en ligne (GitHub Pages)
+
+Le workflow `.github/workflows/pages.yml` reconstruit DTU scan1 (eclairage 3)
+sur les runners GitHub et publie le viewer avec ce seul jeu public. Les
+captures personnelles (`bose_01`, `live_*`) ne sont jamais publiees.
+
+1. `scripts/fetch_dtu_scan.py` ne telecharge que les PNG de scan1 (eclairage 3) via des
+   requetes HTTP par plages (repli : archive complete de 6 Go).
+2. `prepare_dtu_capture.py`, `reconstruct_dtu.py` (sparse CPU), puis
+   `export_diagnostics.py`.
+3. `scripts/build_pages_site.py dtu_scan001 --out _site` assemble le site en
+   gardant les chemins relatifs du viewer.
+
+La reconstruction est mise en cache et n'est refaite que si le pipeline change.
+Relance manuelle : onglet Actions → *Viewer on GitHub Pages* → Run workflow.
+Prealable unique : Settings → Pages → Source : **GitHub Actions**.
+
 ## Prochain jalon
 
 Valider les metriques DTU sur la baseline Tola, puis sur scan1 FormaScale.

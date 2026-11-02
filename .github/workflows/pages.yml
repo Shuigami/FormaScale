@@ -1,0 +1,91 @@
+name: Viewer on GitHub Pages
+
+# Rebuilds the public DTU scan1 reconstruction on GitHub's runners and
+# publishes viewer/ with it. Personal captures are never published.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "viewer/**"
+      - "live/static/fonts/**"
+      - "formascale/**"
+      - "scripts/fetch_dtu_scan.py"
+      - "scripts/prepare_dtu_capture.py"
+      - "scripts/reconstruct_dtu.py"
+      - "scripts/export_diagnostics.py"
+      - "scripts/build_pages_site.py"
+      - "requirements.txt"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  CAPTURE: dtu_scan001
+  RUN: sift_shared_ci
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt remotezip
+
+      # The reconstruction only changes when the pipeline code does.
+      - name: Restore reconstruction
+        id: recon
+        uses: actions/cache@v4
+        with:
+          path: captures/${{ env.CAPTURE }}
+          key: dtu-scan1-${{ hashFiles('requirements.txt', 'formascale/**', 'scripts/fetch_dtu_scan.py', 'scripts/prepare_dtu_capture.py', 'scripts/reconstruct_dtu.py', 'scripts/export_diagnostics.py') }}
+
+      - name: Fetch DTU scan1 (light 3)
+        if: steps.recon.outputs.cache-hit != 'true'
+        run: python scripts/fetch_dtu_scan.py --scan 1 --light 3
+
+      - name: Prepare capture
+        if: steps.recon.outputs.cache-hit != 'true'
+        run: python scripts/prepare_dtu_capture.py --scan 1 --run-name "$CAPTURE"
+
+      - name: Sparse reconstruction
+        if: steps.recon.outputs.cache-hit != 'true'
+        run: python scripts/reconstruct_dtu.py "captures/$CAPTURE" --run "$RUN" --threads "$(nproc)"
+
+      - name: Export viewer data
+        if: steps.recon.outputs.cache-hit != 'true'
+        run: |
+          python scripts/export_diagnostics.py "captures/$CAPTURE"
+          # Keep only what the site needs in the cache.
+          rm -rf "captures/$CAPTURE/images" "captures/$CAPTURE/runs/$RUN/database.db"
+
+      - name: Build site
+        run: python scripts/build_pages_site.py "$CAPTURE" --out _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
